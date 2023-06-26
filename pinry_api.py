@@ -312,7 +312,7 @@ class PinryClient:
     # explicitly too....
     # see: https://requests.readthedocs.io/en/latest/user/quickstart/#post-a-multipart-encoded-file
     def create_image(self, image):
-        response = self.post('images', files={'image': image})
+        response = self.post('images/', files={'image': image})
         return PinryImage.from_api(response)
 
     def create_pin(self, image, *, private=False, description=None,
