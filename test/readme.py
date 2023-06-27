@@ -4,6 +4,8 @@ pinry_url = 'http://localhost'
 token = open('.venv/secret').read().strip()
 
 with pinry_api.PinryClient(pinry_url, token) as cli:
+    print('I am', cli.get_current_user().username)
+    assert cli.get_current_user().token == token
     for board in cli.list_boards(username='yizmeng'):
         print(board)
 

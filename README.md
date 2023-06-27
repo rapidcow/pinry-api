@@ -1,6 +1,6 @@
 # Unofficial Python API for Pinry
 
-pinry is a self-hosted Pinterest-like tiling image board system
+Pinry is a self-hosted Pinterest-like tiling image board system
 where you can put images and whatnot you like on an infinite
 bulletin board
 

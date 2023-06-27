@@ -7,6 +7,10 @@ from urllib.parse import urljoin
 
 import requests
 
+__all__ = [
+    'PinryUser', 'PinryImage', 'PinryPin',
+    'PinryBoard', 'PinryClient',
+]
 
 _UID_URL = re.compile(r'\A.*/profile/users/(\d+)/\Z')
 
