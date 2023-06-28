@@ -51,7 +51,7 @@ then you can use `list_boards()`:
 ```python
 with pinry_api.PinryClient(pinry_url, token) as api:
     # replace yizmeng with your username of course
-    for board in api.list_boards(username='yizmeng'):
+    for board in api.list_boards(submitter='yizmeng'):
         print(f'{board.name} ({board.id}): {board.total_pins} pin(s)')
 ```
 
@@ -81,8 +81,8 @@ once again, you can do that too!
 ```python
 with pinry_api.PinryClient(pinry_url, token) as api:
     # get the unique board whose name matches "among us"
-    (board,) = api.list_boards(search='among us', username='yizmeng')
-    for pin in api.list_pins(board=board, username='yizmeng', ordering='id'):
+    (board,) = api.list_boards(search='among us', submitter='yizmeng')
+    for pin in api.list_pins(board=board, submitter='yizmeng', ordering='id'):
         tags = ', '.join(f'#{tag}' for tag in pin.tags) or 'N/A'
         print(f'pin {pin.id}: {pin.description} (tagged {tags})')
 ```
@@ -105,7 +105,7 @@ well `edit_pin()` lets you do that:
 ```python
 # feeding the generator to list() so that
 # we are iterating over a fixed set of pins
-for pin in list(api.list_pins(board=board, username='yizmeng', ordering='id')):
+for pin in list(api.list_pins(board=board, submitter='yizmeng', ordering='id')):
     if 'yellow' not in pin.tags:
         pin.tags.append('yellow')
     api.edit_pin(pin)

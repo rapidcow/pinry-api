@@ -216,9 +216,9 @@ class PinryClient:
 
     # board methods
     # limit 50 is API_LIMIT_PER_PAGE set in pinry/settings/base.py
-    def get_board_info(self, *, username=None):
-        if username is not None:
-            queries = {'submitter__username': username}
+    def get_board_info(self, *, submitter=None):
+        if submitter is not None:
+            queries = {'submitter__username': submitter}
         else:
             queries = {}
         return self.get('boards-auto-complete/', params=queries)
@@ -227,20 +227,20 @@ class PinryClient:
         data = self.get(f'boards/{board_id}/')
         return PinryBoard.from_api(data)
 
-    def get_boards(self, search=None, username=None, *, offset=0, limit=50):
+    def get_boards(self, search=None, submitter=None, *, offset=0, limit=50):
         queries = {'limit': limit, 'offset': offset}
         if search is not None:
             queries['search'] = search
-        if username is not None:
-            queries['submitter__username'] = username
+        if submitter is not None:
+            queries['submitter__username'] = submitter
         return self.get('boards/', params=queries)
 
-    def list_boards(self, search=None, username=None, *,
+    def list_boards(self, search=None, submitter=None, *,
                     offset=0, limit=0, buffering=50):
         queried = 0
         while True:
             response = self.get_boards(
-                search, username, offset=offset, limit=buffering)
+                search, submitter, offset=offset, limit=buffering)
             for data in response['results']:
                 if limit and queried > limit:
                     return
@@ -279,25 +279,25 @@ class PinryClient:
         return PinryPin.from_api(data)
 
     # ordering seems broken, ignore this
-    def get_pins(self, board=None, username=None, tag=None,
+    def get_pins(self, board=None, submitter=None, tag=None,
                  *, offset=0, limit=50, ordering='-id'):
         queries = {'limit': limit, 'offset': offset,
                    'ordering': ordering}
         if board is not None:
             queries['pins__id'] = board.id
-        if username is not None:
-            queries['submitter__username'] = username
+        if submitter is not None:
+            queries['submitter__username'] = submitter
         if tag is not None:
             queries['tags__name'] = tag
         return self.get('pins/', params=queries)
 
-    def list_pins(self, board=None, username=None, tag=None,
+    def list_pins(self, board=None, submitter=None, tag=None,
                   *, offset=0, limit=0, buffering=50,
                   ordering='-id'):
         queried = 0
         while True:
             response = self.get_pins(
-                board, username, tag, offset=offset,
+                board, submitter, tag, offset=offset,
                 limit=buffering, ordering=ordering)
             for data in response['results']:
                 if limit and queried > limit:
