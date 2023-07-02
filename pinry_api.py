@@ -320,16 +320,16 @@ class PinryClient:
         return PinryImage.from_api(response)
 
     def create_pin(self, image, *, private=False, description=None,
-                   source=None, tags=None, board=None):
+                   source=None, tags=None):
         payload = {'private': private, 'description': description,
-                   'referer': source, 'tags': tags}
+                   'referer': source, 'tags': tags or []}
         pinry_image = None
         # an existing image
         if isinstance(image, PinryImage):
             pinry_image = image
         # file system path
         elif os.path.exists(image):
-            with open(url, 'rb') as file:
+            with open(image, 'rb') as file:
                 pinry_image = self.create_image(file)
         # file object (i'm not sure if requests closes it...)
         elif hasattr(image, 'read'):
@@ -337,11 +337,9 @@ class PinryClient:
         if pinry_image is not None:
             payload['image_by_id'] = pinry_image.id
         else:
-            payload['url'] = url
+            payload['url'] = image
         data = self.post('pins/', json=payload)
-        if board is not None:
-            board = self.add_pins_to_board([data['id']], board.id)
-        return PinryPin.from_api(data), board
+        return PinryPin.from_api(data)
 
     def edit_pin(self, pin: PinryPin):
         payload = {'private': pin.private, 'description': pin.description,
