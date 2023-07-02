@@ -248,7 +248,7 @@ class PinryClient:
                 queried += 1
             if response['next'] is None:
                 return
-            offset += limit
+            offset += buffering
 
     def create_board(self, name, *, private=False):
         payload = {'name': name, 'private': private}
@@ -306,7 +306,7 @@ class PinryClient:
                 queried += 1
             if response['next'] is None:
                 return
-            offset += limit
+            offset += buffering
 
     def delete_pin(self, pin_id):
         self.delete(f'pins/{pin_id}')
