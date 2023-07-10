@@ -39,8 +39,8 @@ you the right user:
 
 ```python
 with pinry_api.PinryClient(pinry_url, token) as api:
-    print('I am', api.get_current_user().username)
-    assert api.get_current_user().token == token
+    print('I am', api.me.username)
+    assert api.me.token == token
 ```
 
 ok boring stuff aside, here's some fun things that you can do!

@@ -147,6 +147,7 @@ class PinryBoard:
 
 
 class PinryClient:
+    __slots__ = ('_api_prefix', '_session', '_me')
     #
     # yeah so basically, urljoin doesn't really work like '/'.join
     #
@@ -168,6 +169,7 @@ class PinryClient:
         self._api_prefix = urljoin(url, '/api/v2/')
         self._session = requests.Session()
         self._session.headers.update({'Authorization': f'Token {token}'})
+        self._me = self._get_current_user()
 
     # nice context manager
     def __enter__(self):
@@ -210,9 +212,22 @@ class PinryClient:
         data = self.get('profile/public-users/', params=queries)
         return PinryUser.from_api(data[0])
 
-    def get_current_user(self):
+    def _get_current_user(self):
         data = self.get('profile/users/')
-        return PinryUser.from_api(data[0])
+        try:
+            return PinryUser.from_api(data[0])
+        except IndexError as exc:
+            raise ValueError("I didn't get any user info from Pinry's API "
+                             "with the token you gave me... weird.") from exc
+
+    # me!!!
+    @property
+    def me(self):
+        try:
+            return self._me
+        except AttributeError:
+            self._me = self._get_current_user()
+            return self._me
 
     # board methods
     # limit 50 is API_LIMIT_PER_PAGE set in pinry/settings/base.py
